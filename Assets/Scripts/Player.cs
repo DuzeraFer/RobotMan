@@ -20,6 +20,13 @@ public class Player : MonoBehaviour
     public Animator anima;
     public bool right;
 
+    public GameObject m_Button;
+    ButtonEvent s_Button;
+
+    public bool haveClicked;
+
+    public Joystick m_joystick;
+
     public static int coins;
 
     // Start is called before the first frame update
@@ -33,12 +40,15 @@ public class Player : MonoBehaviour
         particle.gameObject.SetActive(false);
         m = particle.main;
         m.startColor = Color.green;
+        s_Button = m_Button.GetComponent<ButtonEvent>();
+
+        haveClicked = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.X))
+        if (s_Button.buttonPressed == true)
         {
             particle.gameObject.SetActive(true);
             timeC += Time.deltaTime;
@@ -46,24 +56,43 @@ public class Player : MonoBehaviour
             {
                 m.startColor = Color.red;
             }
+            haveClicked = true;
         }
-        if (Input.GetKeyUp(KeyCode.X))
+        if (s_Button.buttonPressed == false && haveClicked == true)
         {
             particle.gameObject.SetActive(false);
             Shoot();
             anima.SetTrigger("shoot");
             timeC = 0;
             m.startColor = Color.green;
+
+            haveClicked = false;
         }
+
         cam.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
-        horizontalInput = Input.GetAxis("Horizontal");
-        rb2d.velocity = new Vector2(horizontalInput * speed, rb2d.velocity.y);
-        if (horizontalInput > 0.01f)
+        //horizontalInput = Input.GetAxis("Horizontal");
+        //horizontalInput = m_joystick.Horizontal;
+        rb2d.velocity = new Vector2(horizontalInput, rb2d.velocity.y);
+
+        if (m_joystick.Horizontal >= 0.2f)
+        {
+            horizontalInput = speed;
+        }
+        else if (m_joystick.Horizontal <= -0.2f)
+        {
+            horizontalInput = -speed;
+        }
+        else
+        {
+            horizontalInput = 0;
+        }
+
+        if (horizontalInput > 0.2f)
         {
             anima.SetFloat("run", Mathf.Abs(horizontalInput));
             sprite.flipX = false;
         }
-        else if (horizontalInput < -0.01f)
+        else if (horizontalInput < -0.2f)
         {
             anima.SetFloat("run", Mathf.Abs(horizontalInput));
             sprite.flipX = true;
@@ -73,19 +102,21 @@ public class Player : MonoBehaviour
             horizontalInput = 0;
             anima.SetFloat("run", Mathf.Abs(horizontalInput));
         }
-        if (Input.GetKeyDown(KeyCode.Space) && grounded)
+
+        if (m_joystick.Vertical >= 0.2f && grounded)
         {
             Jump();
         }
     }
-    void Jump()
+
+    public void Jump()
     {
         rb2d.velocity = new Vector2(rb2d.velocity.x, speed);
         grounded = false;
         anima.SetBool("jump", true);
         anima.SetBool("ground", false);
-
     }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "ground")
@@ -94,12 +125,10 @@ public class Player : MonoBehaviour
             anima.SetBool("jump", false);
             anima.SetBool("ground", true);
         }
-        if (collision.gameObject.tag == "coin")
-        {
-            Destroy(collision.gameObject);
-        }
+
         if (collision.gameObject.tag == "death")
         {
+            transform.position = new Vector3(-4, 4, 0);
             SceneManager.LoadScene(0);
         }
     }
