@@ -10,6 +10,11 @@ public class FinalMenu : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
+    public void JogarNovamenteFase()
+    {
+        SceneManager.LoadScene(0);
+    }
+
     public void QuitGame()
     {
         Application.Quit();

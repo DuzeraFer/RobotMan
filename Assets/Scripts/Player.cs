@@ -101,37 +101,19 @@ public class Player : MonoBehaviour
         {
             horizontalInput = 0;
             anima.SetFloat("run", Mathf.Abs(horizontalInput));
-        }
-
-        if (m_joystick.Vertical >= 0.2f && grounded)
-        {
-            Jump();
-        }
+        }      
     }
 
     public void Jump()
     {
-        rb2d.velocity = new Vector2(rb2d.velocity.x, speed);
-        grounded = false;
-        anima.SetBool("jump", true);
-        anima.SetBool("ground", false);
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "ground")
+        if (grounded)
         {
-            grounded = true;
-            anima.SetBool("jump", false);
-            anima.SetBool("ground", true);
-        }
-
-        if (collision.gameObject.tag == "death")
-        {
-            transform.position = new Vector3(-4, 4, 0);
-            SceneManager.LoadScene(0);
-        }
-    }
+            rb2d.velocity = new Vector2(rb2d.velocity.x, speed);
+            grounded = false;
+            anima.SetBool("jump", true);
+            anima.SetBool("ground", false);
+        }    
+    }  
 
     void Shoot()
     {
@@ -161,6 +143,28 @@ public class Player : MonoBehaviour
         {
             Destroy(collision.gameObject);
             coins++;
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "ground")
+        {
+            grounded = true;
+            anima.SetBool("jump", false);
+            anima.SetBool("ground", true);
+        }
+
+        if (collision.gameObject.tag == "death")
+        {
+            coins = 0;
+            SceneManager.LoadScene(2);
+        }
+
+        if (collision.gameObject.tag == "door")
+        {
+            coins = 0;
+            SceneManager.LoadScene(3);
         }
     }
 }
