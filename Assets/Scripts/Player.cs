@@ -157,8 +157,15 @@ public class Player : MonoBehaviour
 
         if (collision.gameObject.tag == "death")
         {
-            coins = 0;
-            SceneManager.LoadScene(2);
+            if (coins == 0)
+            {
+                coins = 0;
+                SceneManager.LoadScene(2);
+            }
+            else
+            {
+                transform.position = new Vector3(-4, 4, 0);
+            }              
         }
 
         if (collision.gameObject.tag == "door")
