@@ -64,4 +64,9 @@ public class HUD : MonoBehaviour
     {
         SceneManager.LoadScene(scene);
     }
+
+    public void MoveButton()
+    {
+        Player.move = !Player.move;
+    }
 }

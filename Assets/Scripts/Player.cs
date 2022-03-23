@@ -9,9 +9,9 @@ public class Player : MonoBehaviour
     public ParticleSystem.MainModule m;
     public float timeC;
     public Camera cam;
-    public float speed;
+    public static float speed;
     public Rigidbody2D rb2d;
-    float horizontalInput;
+    public static float horizontalInput;
     public bool grounded;
     public SpriteRenderer sprite;
     public GameObject[] shoots;
@@ -28,6 +28,8 @@ public class Player : MonoBehaviour
     public Joystick m_joystick;
 
     public static int coins;
+
+    public static bool move;
 
     // Start is called before the first frame update
     void Start()
@@ -164,6 +166,7 @@ public class Player : MonoBehaviour
             }
             else
             {
+                coins = 0;
                 transform.position = new Vector3(-4, 4, 0);
             }              
         }

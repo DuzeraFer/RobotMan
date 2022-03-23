@@ -23,7 +23,10 @@ public class Drag : MonoBehaviour
             {
                 Touch touch = Input.GetTouch(0);
                 Vector2 touchPosition = Camera.main.ScreenToWorldPoint(touch.position);
-                transform.position = touchPosition;
+                if (GetComponent<Collider2D>().OverlapPoint(touchPosition))
+                {
+                    transform.position = touchPosition;
+                }
             }
 
             if (Input.GetTouch(0).phase == TouchPhase.Ended)
